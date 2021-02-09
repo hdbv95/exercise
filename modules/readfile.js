@@ -73,36 +73,16 @@ function getpayment(fileresult){
         newfile(rl);
       } else {
         //if the user input is a name that isn't in the file close the interface and give ups on input/output streams
-        //prints invalid user and recursively calls getpayment function expecting for a new name or the user quitting
+        //prints employee not found and recursively calls getpayment function expecting for a new name or the user quitting
         rl.close();
-        console.log('\x1b[31mInvalid User\n\x1b[0m');
+        console.log('\x1b[31mEmployee not found\n\x1b[0m');
         getpayment(fileresult);
       }
     } else {
       //if the find function returns an array then it prints the employee's name and amount
-      //asks if the user want to search another employee on the loaded file rl method is used as a promise
-      console.log(`\x1b[36mThe amount to pay ${employee} is ${payment(empfound)} USD\n\x1b[0m`);
-      new Promise((resolve)=>{
-        //sets the new question
-        //shows in console
-        //waits for the event of new line
-        rl.setPrompt('\x1b[36m\nSearch other user? (y/n)\n\x1b[0m');
-        rl.prompt();
-        rl.on('line',(response)=>{
-          resolve(response.toUpperCase());
-        });
-      }).then(response =>{
-        //evaluates the response 
-        //if input is yes or y close the interface and give ups on input/output streams
-        //recursively calls getpayment function expecting for a new name or the user quitting 
-        if(response ==='Y' || response === 'YES'){
-          rl.close();
-          getpayment(fileresult);
-          //if user input is no or n then the newfile function is called
-        } else if(response ==='N' || response === 'NO'){
-          newfile(rl);
-        }
-      });
+      //asks if the user want to search another employee on the loaded file by the function newmployee
+      console.log(`\x1b[36mThe amount to pay ${employee} is ${payment(empfound)} USD\x1b[0m`);
+      newemployee(fileresult,rl)
     }
   });
 }
@@ -139,7 +119,7 @@ function newfile(rl){
         //else uses deafult file
         rl.close();
         if(newfile.length>0 ){
-          getFile(newfile );
+          getFile(newfile);
         } else {
           getFile('./employees.txt');
         }
@@ -148,8 +128,39 @@ function newfile(rl){
     }else if(resp=='N' || resp=='NO'){
       console.log('\x1b[33mBye!\n\x1b[0m');
       process.exit();      
+    }else{//any other input
+      console.log('\x1b[31mInvalid input\x1b[0m');
+      newfile(rl);
     }
   });
 }
 
+//this functions interacts with the user asking for a new employee name or a new file 
+function newemployee(fileresult,rl){
+  //asks if the user want to try other employee name rl method is used as a promise
+  new Promise((resolve)=>{
+    //sets the new question
+    //shows in console
+    //waits for the event of new line
+    rl.setPrompt('\x1b[36m\nSearch other employee? (y/n)\n\x1b[0m');
+    rl.prompt();
+    rl.on('line',(response)=>{
+      resolve(response.toUpperCase());
+    });
+  }).then(response =>{
+    //evaluates the response 
+    //if input is yes or y close the interface and give ups on input/output streams
+    //recursively calls getpayment function expecting for a new name or the user quitting 
+    if(response ==='Y' || response === 'YES'){
+      rl.close();
+      getpayment(fileresult);
+      //if user input is no or n then the newfile function is called
+    } else if(response ==='N' || response === 'NO'){
+      newfile(rl);
+    }else{
+      console.log('\x1b[31mInvalid input\x1b[0m');
+      newemployee(fileresult,rl);
+    }
+  });
+}
 module.exports = getFile;
