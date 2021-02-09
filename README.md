@@ -101,6 +101,17 @@ Input
 newfile(rl)
 ~~~
 
+### **Function newemployee**
+***newemployee(any,Readline interface)***
+
+This function is called from the getpayment function and recieves as a parameter the file as an array and a Readline interface (to avoid a new interface creation).
+
+The function will ask if the user wants to search other employee if so then the getpayment function is called else it asks if want tor try other file with the newfile function.
+~~~
+Input
+newemployee(fileresult,rl)
+~~~
+
 ### **Function find**
 ***find(array[],string)***
 
